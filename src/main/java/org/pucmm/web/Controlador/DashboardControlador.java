@@ -24,7 +24,6 @@ public class DashboardControlador {
     public DashboardControlador(Javalin app)
     {
         this.app = app;
-        JavalinRenderer.register(JavalinThymeleaf.INSTANCE, ".html");
         modelo.put("dominio", dominio);
     }
 
@@ -32,13 +31,13 @@ public class DashboardControlador {
     public void aplicarRutas() throws NumberFormatException {
 
        app.get("/dashboard", ctx -> {
-
-            if(ctx.sessionAttribute("usuario") == null || ctx.sessionAttribute("usuario")=="")
+            Usuario usuario = ctx.sessionAttribute("usuario");
+            if(usuario == null)
             {
                 ctx.redirect("/usuario/iniciarSesion");
             }else
             {
-                Usuario user =  UsuarioServices.getInstancia().getUsuario(ctx.sessionAttribute("usuario"));
+                Usuario user =  UsuarioServices.getInstancia().getUsuario(usuario.getNombreUsuario());
 
                 if(user != null)
                 {
@@ -60,7 +59,6 @@ public class DashboardControlador {
                     }
 
                     modelo.put("clientes",null);
-                    modelo.put("visitasFechas","");
                     modelo.put("visitasFechas","");
                     modelo.put("usuarioActual", UsuarioServices.getInstancia().getUsuario(user.getNombreUsuario()));
                     modelo.put("urls", UsuarioServices.getInstancia().getURLsByUsuario(user.getNombreUsuario()));
@@ -125,13 +123,12 @@ public class DashboardControlador {
             }
         });
 
-
         app.get("/dashboard/infoURL", ctx -> {
             if(ctx.sessionAttribute("usuario") == null)
             {
                 ctx.redirect("/usuario/iniciarSesion");
             }else {
-                ctx.render("/vistas/templates/dashboard.html", modelo);
+                ctx.render("/vistas/templates/infoUrl.html", modelo);
             }
         });
 
@@ -143,7 +140,6 @@ public class DashboardControlador {
                 ctx.render("/vistas/templates/dashboardOtro.html", modeloVistaUsuario);
             }
         });
-
 
         app.post("/dashboard/infoURL", ctx -> {
             if(ctx.sessionAttribute("usuario") == null)
@@ -165,10 +161,10 @@ public class DashboardControlador {
 
                 modelo.put("urlActual", ctx.formParam("url"));
                 modelo.put("fechaAcceso", "");
-                modelo.put("clientes", new HashSet<Cliente>());
+                modelo.put("clientes", URLServices.getInstance().getClientesByUrl(ctx.formParam("url")));
                 modelo.put("fechas", fechas);
                 modelo.put("visitasFechas", visitasFechas);
-                ctx.render("/vistas/templates/dashboard.html", modelo);
+                ctx.render("/vistas/templates/infoUrl.html", modelo);
             }
         });
 

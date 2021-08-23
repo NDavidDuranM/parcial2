@@ -5,8 +5,10 @@ import io.javalin.plugin.rendering.JavalinRenderer;
 import io.javalin.plugin.rendering.template.JavalinThymeleaf;
 import org.eclipse.jetty.server.session.Session;
 import org.pucmm.web.Modelo.URL;
+import org.pucmm.web.Modelo.Usuario;
 import org.pucmm.web.Servicio.URLServices;
 import org.pucmm.web.Servicio.UsuarioServices;
+import org.pucmm.web.util.RolesApp;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -31,13 +33,13 @@ public class URLControlador {
     {
         this.app = app;
         modelo.put("dominio",dominio);
-        JavalinRenderer.register(JavalinThymeleaf.INSTANCE, ".html");
     }
 
     public void aplicarRutas() throws NumberFormatException {
 
         app.get("/",ctx -> {
-            modelo.put("urls", ctx.cookieMap().entrySet());
+            Usuario tmp = ctx.sessionAttribute("usuario");
+            isUserLogged(modelo,tmp);
             ctx.render("vistas/templates/index.html",modelo);
         });
 
@@ -70,6 +72,15 @@ public class URLControlador {
             }
         });
 
+        app.get("/misLinks", ctx -> {
+            Usuario user = ctx.sessionAttribute("usuario");
+            if (user != null){
+                modelo.put("urls",UsuarioServices.getInstancia().getURLsByUsuario(user.getNombreUsuario()));
+            }else{
+                modelo.put("urls", URLServices.getInstance().getUrlsCliente());
+            }
+            ctx.render("vistas/templates/misLinks.html", modelo);
+        });
 
         app.get("/:url",ctx -> {
 
@@ -82,11 +93,13 @@ public class URLControlador {
         app.get("/redireccionar/:url", ctx -> {
 
             //Obteniendo el cliente (navegador) desde donde se accede
-            String[] InfoNavegador = ctx.req.getHeader("sec-ch-ua").split(",");
-            String[] DatosCliente = InfoNavegador[1].split(";");
-            String nombreCliente = DatosCliente[0];
+            //String[] InfoNavegador = ctx.userAgent();
+            //String[] DatosCliente = InfoNavegador[1].split(";");
+            String nombreCliente = ctx.userAgent();
             LocalDate fechaAcceso = LocalDate.now();
             LocalTime horaAcceso = LocalTime.now();
+
+
 
             //Sistema operativo
             String os = System.getProperty("os.name");
@@ -103,6 +116,19 @@ public class URLControlador {
 
         });
 
+    }
+
+    private void isUserLogged(Map<String, Object> modelo, Usuario tmp){
+        if(tmp!=null){
+            modelo.put("loggedIn",1);
+            if (tmp.getRol() == RolesApp.ROLE_ADMIN){
+                modelo.put("isAdmin", 1);
+            }else{
+                modelo.put("isAdmin", 0);
+            }
+        }else{
+            modelo.put("loggedIn",0);
+        }
     }
 
 }

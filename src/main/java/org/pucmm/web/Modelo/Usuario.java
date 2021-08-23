@@ -1,5 +1,7 @@
 package org.pucmm.web.Modelo;
 
+import org.pucmm.web.util.RolesApp;
+
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
@@ -14,18 +16,18 @@ public class Usuario implements Serializable {
     private String nombreUsuario;
     private String password;
     private String nombre;
-    private boolean isAdmin;
+    private RolesApp rol;
 
     @OneToMany(fetch = FetchType.EAGER)
     private Set<URL> urls;
 
     public Usuario(){}
 
-    public Usuario(String usuario, String password, String nombre, boolean isAdmin){
+    public Usuario(String usuario, String password, String nombre, RolesApp rol){
         this.nombreUsuario = usuario;
         this.password = password;
         this.nombre = nombre;
-        this.isAdmin = isAdmin;
+        this.rol = rol;
     }
 
     public String getNombreUsuario() {
@@ -60,11 +62,10 @@ public class Usuario implements Serializable {
         this.urls = urls;
     }
 
-    public boolean isAdmin() {
-        return isAdmin;
+    public RolesApp getRol() {
+        return rol;
     }
-
-    public void setAdmin(boolean admin) {
-        isAdmin = admin;
+    public void setRol(RolesApp rol) {
+        this.rol = rol;
     }
 }

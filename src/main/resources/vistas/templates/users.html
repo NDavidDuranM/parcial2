@@ -1,19 +1,4 @@
-<!--
 
-=========================================================
-* Now UI Dashboard - v1.5.0
-=========================================================
-
-* Product Page: https://www.creative-tim.com/product/now-ui-dashboard
-* Copyright 2019 Creative Tim (http://www.creative-tim.com)
-
-* Designed by www.invisionapp.com Coded by www.creative-tim.com
-
-=========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-
--->
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 
@@ -144,10 +129,10 @@
                       </div>
                     </div>
                   </div>
-                  <div th:if="${usuarioActual == 'admin' and selected.getNombreUsuario() != 'admin'}" class="form-group">
+                  <div class="form-group">
                     <div class="form-check">
                       <label class="form-check-label">
-                        <input name="admin" th:checked="${selected.isAdmin()}" value="checked" class="form-check-input" type="checkbox"> Administrador
+                        <input name="admin" th:checked="${selected.getRol()}" value="checked" class="form-check-input" type="checkbox"> Administrador
                         <span class="form-check-sign">
                           <span class="check"></span>
                         </span>
@@ -192,12 +177,12 @@
                       <button th:if="${usuarioActual == 'admin'}" formmethod="post" name="usuarioLista" th:value="${usuario.nombreUsuario}" type="submit" rel="tooltip" title="editar" class="btn btn-info btn-round btn-icon btn-icon-mini btn-neutral" data-original-title="Edit Task">
                         <i class="now-ui-icons design-2_ruler-pencil"></i>
                       </button>
-                      <button th:if="${usuarioActual != 'admin' and usuario.isAdmin() == false}" formmethod="post" name="usuarioLista" th:value="${usuario.nombreUsuario}" type="submit" rel="tooltip" title="editar" class="btn btn-info btn-round btn-icon btn-icon-mini btn-neutral" data-original-title="Edit Task">
+                      <button th:if="${usuarioActual != 'admin' and usuario.getRol().name() == 'ROLE_ADMIN'}" formmethod="post" name="usuarioLista" th:value="${usuario.nombreUsuario}" type="submit" rel="tooltip" title="editar" class="btn btn-info btn-round btn-icon btn-icon-mini btn-neutral" data-original-title="Edit Task">
                         <i class="now-ui-icons design-2_ruler-pencil"></i>
                       </button>
                       <button th:if="${usuarioActual == 'admin' and usuario.nombreUsuario != 'admin'}" type="submit" name="eliminar" th:value="${usuario.nombreUsuario}" th:formaction="@{/usuario/eliminar}" rel="tooltip" title="eliminar" class="btn btn-danger btn-round btn-icon btn-icon-mini btn-neutral" data-original-title="Remove">
                         <i class="now-ui-icons ui-1_simple-remove"></i> </button>
-                      <button th:if="${usuarioActual != 'admin' and usuario.isAdmin() == false}" type="submit" name="eliminar" th:value="${usuario.nombreUsuario}" th:formaction="@{/usuario/eliminar}" rel="tooltip" title="eliminar" class="btn btn-danger btn-round btn-icon btn-icon-mini btn-neutral" data-original-title="Remove">
+                      <button th:if="${usuarioActual != 'admin' and usuario.getRol().name() == 'ROLE_USUARIO'}" type="submit" name="eliminar" th:value="${usuario.nombreUsuario}" th:formaction="@{/usuario/eliminar}" rel="tooltip" title="eliminar" class="btn btn-danger btn-round btn-icon btn-icon-mini btn-neutral" data-original-title="Remove">
                         <i class="now-ui-icons ui-1_simple-remove"></i> </button>
                     </form>
                   </td>

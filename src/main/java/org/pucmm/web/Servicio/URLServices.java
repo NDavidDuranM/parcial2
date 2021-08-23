@@ -305,4 +305,9 @@ public class URLServices {
         }
     }
 
+    public Set<Cliente> getClientesByUrl(String idUrl)
+    {
+        return ((URL) gestionDb.find(idUrl)).getClientes();
+    }
+
 }

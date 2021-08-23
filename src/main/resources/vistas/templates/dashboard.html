@@ -43,7 +43,7 @@
                             <p>Dashboard</p>
                         </a>
                     </li>
-                    <li th:if="${usuarioActual.isAdmin() == true}">
+                    <li>
                         <a href="/dashboard/usuarios">
                             <i class="now-ui-icons users_single-02"></i>
                             <p>Usuarios</p>
@@ -114,9 +114,7 @@
                         urlActual.push("[(${url})]");
                         ///*[/]*/
 
-                        /*[# th:each="fecha : ${fechas}"]*/
                          fechas.push("[(${fecha})]");
-                        ///*[/]*/
 
                         //Funcion para cargar el historial de acceso cuando se clickee una barra en el dashboard. Asi se vera el acceso obtenido desde esa fecha
                         function graphClickEvent(event, array){
@@ -219,7 +217,7 @@
                 </canvas>
             </div>
             <div class="content">
-                <div class="row">
+                <!--<div class="row">
                     <div class="col-md-7">
                         <div class="card card-chart">
                             <div class="card-header">
@@ -255,7 +253,7 @@
                             </div>
                         </div>
                     </div>
-                </div>
+                </div>-->
                 <div class="row">
                     <div class="col-md-12">
 
@@ -317,7 +315,7 @@
 
 
     <!--   Core JS Files   -->
-    <script src="../assets/js/core/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script>
     <script src="../assets/js/core/popper.min.js"></script>
     <script src="../assets/js/core/bootstrap.min.js"></script>
     <script src="../assets/js/plugins/perfect-scrollbar.jquery.min.js"></script>

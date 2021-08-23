@@ -13,9 +13,7 @@ public class BootStrapServices {
 
     private static org.pucmm.web.Servicio.BootStrapServices instancia;
 
-    private BootStrapServices() {
-
-    }
+    private BootStrapServices() {}
 
     public static org.pucmm.web.Servicio.BootStrapServices getInstancia() {
         if (instancia == null) {

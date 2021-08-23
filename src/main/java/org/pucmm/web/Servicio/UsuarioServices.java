@@ -2,6 +2,7 @@ package org.pucmm.web.Servicio;
 
 import org.pucmm.web.Modelo.URL;
 import org.pucmm.web.Modelo.Usuario;
+import org.pucmm.web.util.RolesApp;
 
 import javax.persistence.EntityManager;
 import java.util.List;
@@ -18,7 +19,7 @@ public class UsuarioServices {
         //Creando el admin
         if(gestionDb.find("admin")== null)
         {
-            Usuario admin = new Usuario("admin","admin","Administrador",true);
+            Usuario admin = new Usuario("admin","admin","Administrador", RolesApp.ROLE_ADMIN);
             gestionDb.crear(admin);
         }
 
@@ -60,27 +61,27 @@ public class UsuarioServices {
         return ((Usuario) gestionDb.find(idUser)).getUrls();
     }
 
-    public void asignarAdmin(String nombreUsuario)
+    public void cambiaCredencial(String nombreUsuario)
     {
         Usuario user = (Usuario) gestionDb.find(nombreUsuario);
-        if(user.isAdmin())
+        if(user.getRol() == RolesApp.ROLE_ADMIN)
         {
-            user.setAdmin(false);
+            user.setRol(RolesApp.ROLE_USUARIO);
         }else
         {
-            user.setAdmin(true);
+            user.setRol(RolesApp.ROLE_ADMIN);
         }
 
         gestionDb.editar(user);
     }
 
-    public Usuario editarUsuario(String idUser, String nombre, String password, boolean admin)
+    public Usuario editarUsuario(String idUser, String nombre, String password, RolesApp rol)
     {
         Usuario user = (Usuario) gestionDb.find(idUser);
         EntityManager em = gestionDb.getEntityManager();
         try{
             em.getTransaction().begin();
-            user.setAdmin(admin);
+            user.setRol(rol);
             user.setNombre(nombre);
             user.setPassword(password);
             em.merge(user);
