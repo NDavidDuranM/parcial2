@@ -249,5 +249,28 @@ public class DashboardControlador {
             ctx.redirect("/dashboard/infoURLOtro");
         }, Collections.singleton(RolesApp.ROLE_ADMIN));
 
+        app.post("/misLinks/infoUrl", ctx -> {
+
+            URL url = URLServices.getInstance().getURL(ctx.formParam("url"));
+            fechas = new HashSet<>();
+            visitasFechas = new ArrayList<>();
+
+            for (Cliente cliente : url.getClientes()) {
+                LocalDate date = cliente.getFechaAcceso();
+                fechas.add(date);
+            }
+
+            for (LocalDate fecha : fechas) {
+                visitasFechas.add(URLServices.getInstance().getCantidadVisitasFecha(url.getDireccionAcortada(), fecha.toString()));
+            }
+
+            modelo.put("urlActual", ctx.formParam("url"));
+            modelo.put("fechaAcceso", "");
+            modelo.put("clientes", URLServices.getInstance().getClientesByUrl(ctx.formParam("url")));
+            modelo.put("fechas", fechas);
+            modelo.put("visitasFechas", visitasFechas);
+            ctx.render("/vistas/templates/infoUrl.html", modelo);
+        });
+
     }
 }

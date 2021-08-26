@@ -4,6 +4,7 @@ import io.javalin.Javalin;
 import io.javalin.plugin.rendering.JavalinRenderer;
 import io.javalin.plugin.rendering.template.JavalinThymeleaf;
 import org.eclipse.jetty.server.session.Session;
+import org.pucmm.web.Modelo.Cliente;
 import org.pucmm.web.Modelo.URL;
 import org.pucmm.web.Modelo.Usuario;
 import org.pucmm.web.Servicio.URLServices;
@@ -17,10 +18,7 @@ import java.io.InputStreamReader;
 import java.net.*;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class URLControlador {
 
@@ -62,12 +60,13 @@ public class URLControlador {
         });
 
         app.post("/url/eliminar", ctx -> {
-            if(ctx.sessionAttribute("usuario") == null)
+            Usuario tmp = ctx.sessionAttribute("usuario");
+            if(tmp == null)
             {
                 ctx.redirect("/usuario/iniciarSesion");
             }else {
                 URLServices.getInstance().eliminarURL(ctx.sessionAttribute("vistaUsuario"), ctx.formParam("eliminar"));
-                ctx.redirect("/dashboard");
+                ctx.redirect("/misLinks");
             }
         });
 

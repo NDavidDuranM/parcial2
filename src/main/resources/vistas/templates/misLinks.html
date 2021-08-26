@@ -165,7 +165,7 @@
                                             </td>
                                             <td th:text="${url.getOrigen()}" class="text-left"></td>
                                             <td class="td-actions text-right">
-                                                <form th:action="@{/dashboard/infoURL}" method="post">
+                                                <form th:action="@{/misLinks/infoUrl}" method="post">
                                                     <button name="url" th:value="${url.direccionAcortada}" type="submit" rel="tooltip" title="estadisticas" class="btn btn-info btn-round btn-icon btn-icon-mini btn-neutral" data-original-title="Edit Task">
                                                         <i class="now-ui-icons business_chart-bar-32"></i>
                                                     </button>
@@ -192,7 +192,6 @@
 
 <!--   Core JS Files   -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script>
-
 <script src="../assets/js/core/popper.min.js"></script>
 <script src="../assets/js/core/bootstrap.min.js"></script>
 <script src="../assets/js/plugins/perfect-scrollbar.jquery.min.js"></script>

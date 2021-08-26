@@ -308,4 +308,24 @@ public class URLServices {
         return ((URL) gestionDb.find(idUrl)).getClientes();
     }
 
+    public Set<Cliente> getClientesByUrlNoUser(String idUrl){
+        URL found = null;
+        for (URL url : this.urlsCliente){
+            if(url.getDireccionAcortada().equals(idUrl)){
+                found = url;
+            }
+        }
+        return found.getClientes();
+    }
+
+    public URL getUrlNoUser(String idUrl){
+        URL found = null;
+        for (URL url : this.urlsCliente){
+            if(url.getDireccionAcortada().equals(idUrl)){
+                found = url;
+            }
+        }
+        return found;
+    }
+
 }
