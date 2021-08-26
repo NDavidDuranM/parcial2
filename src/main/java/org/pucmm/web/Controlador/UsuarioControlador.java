@@ -4,11 +4,14 @@ import io.javalin.Javalin;
 import io.javalin.plugin.rendering.JavalinRenderer;
 import io.javalin.plugin.rendering.template.JavalinThymeleaf;
 import org.jasypt.util.password.StrongPasswordEncryptor;
+import org.pucmm.web.Modelo.URL;
 import org.pucmm.web.Modelo.Usuario;
+import org.pucmm.web.Servicio.URLServices;
 import org.pucmm.web.Servicio.UsuarioServices;
 import org.pucmm.web.util.RolesApp;
 
 import javax.servlet.http.Cookie;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -120,8 +123,7 @@ public class UsuarioControlador {
             if (usuario != null) { //Si el usuario existe...
                 if (!usuario.getPassword().equals(ctx.formParam("password"))) { //Si sus credenciales NO son correctas...
                     ctx.redirect("/usuario/iniciarSesion");
-                }
-                else{ //Si las credenciales del usuario son correctas...
+                } else{ //Si las credenciales del usuario son correctas...
 
                     //Guardamos el usuario en una cookie
                     if(ctx.formParam("recordar") != null)
@@ -139,6 +141,27 @@ public class UsuarioControlador {
 
                             ctx.res.addCookie(cookie_usuario);
                             ctx.res.addCookie(cookie_password);
+                        }
+                    }
+                    //Colocando las URL almacenadas en la cookie dentro de la cuenta del usuario
+                    for(Map.Entry<String, String> urlCliente : ctx.cookieMap().entrySet())
+                    {
+                        if(!urlCliente.getKey().equalsIgnoreCase("usuario_recordado") || urlCliente.getKey().equalsIgnoreCase("password_recordado"))
+                        {
+                            URL url = URLServices.getInstance().getURL(urlCliente.getKey());
+                            if(url != null)
+                            {
+                                if(!UsuarioServices.getInstancia().getURLsByUsuario(usuario.getNombreUsuario()).contains(url))
+                                {
+                                    URLServices.getInstance().registrarURLUsuario(usuario.getNombreUsuario(),url);
+                                    //System.out.println(url.getDireccionAcortada());
+                                    //System.out.println(urlCliente.getKey());
+                                    ctx.removeCookie(url.getDireccionAcortada()); //REMOVE COOKIE NO ESTA FUNCIONANDO, BUG DEL FRAMEWORK?
+                                    ctx.removeCookie(urlCliente.getKey());
+                                    URLServices.getInstance().getUrlsCliente().clear();
+
+                                }
+                            }
                         }
                     }
 
@@ -168,7 +191,7 @@ public class UsuarioControlador {
                 }
                 ctx.render("/vistas/templates/users.html", modelo);
             }
-        });
+        }, Collections.singleton(RolesApp.ROLE_ADMIN));
 
 
         app.get("/usuario/crear",ctx -> {

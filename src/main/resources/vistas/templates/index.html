@@ -24,10 +24,6 @@
                 <button name="preview" id="previewBtn" class="btn btn-secondary"> Preview</button>
                 <img id="preview"/>
 
-                <meta
-                        name="image"
-                        content="https://api.microlink.io?url=https://www.netflix.com/title/80057281&screenshot=true&meta=false&embed=screenshot.url"
-                />
             </div>
             <div class="row">&nbsp;</div>
             <div class="row">&nbsp;</div>
@@ -38,7 +34,6 @@
         document.getElementById("previewBtn").addEventListener("click", function(){
             var url = document.getElementById("input").value;
             document.getElementById("preview").setAttribute("src", "https://api.microlink.io/?url="+url+"&screenshot=true&embed=screenshot.url");
-            //document.getElementsByName("image")[0].setAttribute("content", "https://api.microlink.io/?url="+url+"&screenshot=true&embed=screenshot.url");
         });
     </script>
 

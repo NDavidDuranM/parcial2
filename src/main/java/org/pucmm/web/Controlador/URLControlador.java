@@ -43,7 +43,6 @@ public class URLControlador {
             ctx.render("vistas/templates/index.html",modelo);
         });
 
-
         app.post("/acortar", ctx -> {
             Cookie cookie_url = new Cookie(URLServices.getInstance().crearRetornarUrlAcortada(ctx.formParam("url")),ctx.formParam("url"));
             cookie_url.setMaxAge(3600*24*30*6); //6 meses

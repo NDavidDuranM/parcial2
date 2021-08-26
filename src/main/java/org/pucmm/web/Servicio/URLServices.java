@@ -123,14 +123,12 @@ public class URLServices {
         return clave;
     }
 
-    public URL nuevaUrlAcortada(String url)
-    {
+    public URL nuevaUrlAcortada(String url) {
         URL nuevaURL = new URL();
         nuevaURL.setOrigen(url);
         nuevaURL.setDireccionAcortada(acortarURL(url));
         urlsCliente.add(nuevaURL);
         gestionDb.crear(nuevaURL);
-
         return nuevaURL;
     }
 

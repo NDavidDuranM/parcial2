@@ -2,15 +2,11 @@ package org.pucmm.web;
 
 import io.javalin.Javalin;
 import io.javalin.core.util.RouteOverviewPlugin;
-import org.pucmm.web.Controlador.DashboardControlador;
-import org.pucmm.web.Controlador.URLControlador;
-import org.pucmm.web.Controlador.UsuarioControlador;
-import org.pucmm.web.Controlador.WebServicesControlador;
+import org.pucmm.web.Controlador.*;
 import org.pucmm.web.Modelo.Usuario;
 import org.pucmm.web.Servicio.BootStrapServices;
 import org.pucmm.web.Servicio.UsuarioServices;
 import org.pucmm.web.util.RolesApp;
-
 import java.sql.SQLException;
 
 public class Main {
@@ -26,6 +22,7 @@ public class Main {
             config.registerPlugin(new RouteOverviewPlugin("/rutas"));
             config.enableCorsForAllOrigins();
         });
+        new SoapControlador(app).aplicarRutas();
         app.start(7000);
 
         //agregando default users.
@@ -39,21 +36,10 @@ public class Main {
         new DashboardControlador(app).aplicarRutas();
         new URLControlador(app).aplicarRutas();
         new UsuarioControlador(app).aplicarRutas();
-        new WebServicesControlador(app).aplicarRutas();
+        new RestControlador(app).aplicarRutas();
 
 
     }
 
-    private static int getHerokuAssignedPort() {
-        String herokuPort = System.getenv("PORT");
-        if (herokuPort != null) {
-            return Integer.parseInt(herokuPort);
-        }
-        return 7000;
-    }
-
-    public static String getModoConexion(){
-        return modoConexion;
-    }
 
 }

@@ -8,6 +8,7 @@ import org.pucmm.web.Modelo.URL;
 import org.pucmm.web.Modelo.Usuario;
 import org.pucmm.web.Servicio.URLServices;
 import org.pucmm.web.Servicio.UsuarioServices;
+import org.pucmm.web.util.RolesApp;
 
 import java.time.LocalDate;
 import java.util.*;
@@ -30,34 +31,50 @@ public class DashboardControlador {
 
     public void aplicarRutas() throws NumberFormatException {
 
+        app.config.accessManager((handler, ctx, permittedRoles) -> {
+            //para obtener el usuario estaré utilizando el contexto de sesion.
+            final Usuario usuario = ctx.sessionAttribute("usuario");
+
+            if(permittedRoles.isEmpty()){
+                handler.handle(ctx);
+                return;
+            }
+            //validando si existe el usuario.
+            if(usuario == null){
+                System.out.println("No hay usuario en sesion..");
+                ctx.status(401).result("No tiene permiso para acceder...");
+                ctx.redirect("/login");
+                return;
+            }
+            //buscando el permiso del usuario.
+            Usuario usuarioTmp = UsuarioServices.getInstancia().getAllUsuarios().stream()
+                    .filter(u -> u.getNombreUsuario().equalsIgnoreCase(usuario.getNombreUsuario()))
+                    .findAny()
+                    .orElse(null);
+
+            if(usuarioTmp==null){
+                System.out.println("Existe el usuario pero sin roles para acceder.");
+                ctx.status(401).result("No tiene credencial para acceder...");
+                return;
+            }
+
+            //validando que el usuario registrado tiene el rol permitido.
+            RolesApp role = usuarioTmp.getRol();
+            if (permittedRoles.contains(role)) {
+                handler.handle(ctx);
+            }
+
+        });
+
        app.get("/dashboard", ctx -> {
             Usuario usuario = ctx.sessionAttribute("usuario");
-            if(usuario == null)
-            {
+            if(usuario == null) {
                 ctx.redirect("/usuario/iniciarSesion");
-            }else
-            {
+            }else{
                 Usuario user =  UsuarioServices.getInstancia().getUsuario(usuario.getNombreUsuario());
 
                 if(user != null)
                 {
-                    //Colocando las URL almacenadas en la cookie dentro de la cuenta del usuario
-                    for(Map.Entry<String, String> urlCliente : ctx.cookieMap().entrySet())
-                    {
-                        if(!urlCliente.getKey().equalsIgnoreCase("usuario_recordado") || urlCliente.getKey().equalsIgnoreCase("password_recordado"))
-                        {
-                            URL url = URLServices.getInstance().getURL(urlCliente.getKey());
-                            if(url != null)
-                            {
-                                if(!UsuarioServices.getInstancia().getURLsByUsuario(user.getNombreUsuario()).contains(url))
-                                {
-                                    URLServices.getInstance().registrarURLUsuario(user.getNombreUsuario(),url);
-                                    ctx.removeCookie(urlCliente.getKey());
-                                }
-                            }
-                        }
-                    }
-
                     modelo.put("clientes",null);
                     modelo.put("visitasFechas","");
                     modelo.put("usuarioActual", UsuarioServices.getInstancia().getUsuario(user.getNombreUsuario()));
@@ -66,7 +83,7 @@ public class DashboardControlador {
                 }
 
             }
-        });
+        }, Collections.singleton(RolesApp.ROLE_ADMIN));
 
         app.post("/dashboard/infoOtro", ctx -> {
 
@@ -130,7 +147,7 @@ public class DashboardControlador {
             }else {
                 ctx.render("/vistas/templates/infoUrl.html", modelo);
             }
-        });
+        }, Collections.singleton(RolesApp.ROLE_ADMIN));
 
         app.get("/dashboard/infoURLOtro", ctx -> {
             if(ctx.sessionAttribute("usuario") == null)
@@ -166,7 +183,7 @@ public class DashboardControlador {
                 modelo.put("visitasFechas", visitasFechas);
                 ctx.render("/vistas/templates/infoUrl.html", modelo);
             }
-        });
+        }, Collections.singleton(RolesApp.ROLE_ADMIN));
 
         app.get("/dashboard/infoURL/:url/estadisticas/:fecha",ctx->{
             if(ctx.sessionAttribute("usuario") == null)
@@ -195,7 +212,7 @@ public class DashboardControlador {
                 ));
                 ctx.redirect("/dashboard/infoURL");
             }
-        });
+        }, Collections.singleton(RolesApp.ROLE_ADMIN));
 
         app.get("/dashboard/infoURLOtro/:url/estadisticas/:fecha",ctx->{
             if(ctx.sessionAttribute("usuario") == null)
@@ -223,14 +240,14 @@ public class DashboardControlador {
                 ));
                 ctx.redirect("/dashboard/infoURLOtro");
             }
-        });
+        }, Collections.singleton(RolesApp.ROLE_ADMIN));
 
         //Eliminacion de URLs de otros usuarios
         app.post("/url/eliminar-otro", ctx -> {
             URLServices.getInstance().eliminarURL(modeloVistaUsuario.get("verUsuario").toString(), ctx.formParam("eliminar"));
             modeloVistaUsuario.put("urls", UsuarioServices.getInstancia().getURLsByUsuario(modeloVistaUsuario.get("verUsuario").toString()));
             ctx.redirect("/dashboard/infoURLOtro");
-        });
+        }, Collections.singleton(RolesApp.ROLE_ADMIN));
 
     }
 }

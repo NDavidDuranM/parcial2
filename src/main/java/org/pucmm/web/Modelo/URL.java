@@ -1,9 +1,14 @@
 package org.pucmm.web.Modelo;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import org.junit.Ignore;
 import org.pucmm.web.Servicio.GestionDb;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -17,10 +22,17 @@ public class URL implements Serializable {
     private String origen; //Origen que se va a acortar
 
     @OneToMany(fetch = FetchType.EAGER)
+    @JsonIgnore
     private Set<Cliente> clientes;
+
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    @Transient
+    public String B64preview;
+    private Date fechaCreacion = new Date();
 
 
     public URL() {
+        this.fechaCreacion = new Date();
         if(clientes == null)
         {
             clientes = new HashSet<>();
@@ -55,5 +67,13 @@ public class URL implements Serializable {
 
     public void setClientes(Set<Cliente> clientes) {
         this.clientes = clientes;
+    }
+
+    public Date getFechaCreacion() {
+        return fechaCreacion;
+    }
+
+    public void setFechaCreacion(Date fechaCreacion) {
+        this.fechaCreacion = fechaCreacion;
     }
 }
