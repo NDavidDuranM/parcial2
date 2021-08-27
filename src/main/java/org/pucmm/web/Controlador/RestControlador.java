@@ -1,28 +1,29 @@
 package org.pucmm.web.Controlador;
 
 import io.javalin.Javalin;
-import io.javalin.plugin.rendering.JavalinRenderer;
-import io.javalin.plugin.rendering.template.JavalinThymeleaf;
+import io.jsonwebtoken.*;
+import io.jsonwebtoken.security.Keys;
 import kong.unirest.Unirest;
-import org.jasypt.util.password.StrongPasswordEncryptor;
 import org.pucmm.web.Modelo.URL;
 import org.pucmm.web.Modelo.Usuario;
 import org.pucmm.web.Servicio.URLServices;
 import org.pucmm.web.Servicio.UsuarioServices;
-import org.pucmm.web.util.RolesApp;
-
 import javax.imageio.ImageIO;
-import javax.servlet.http.Cookie;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.Base64;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
 public class RestControlador {
 
     private Javalin app;
+    public final static String KEY = "tres tristes tigres tragaban trigo en un trigal";
+    //private final static Key KEY = io.jsonwebtoken.security.Keys.secretKeyFor(SignatureAlgorithm.ES256);
     Map<String, Object> modelo = new HashMap<>();
 
     public RestControlador(Javalin app)
@@ -39,14 +40,29 @@ public class RestControlador {
         app.post("/api-rest/login", ctx -> {
             Usuario usuario = UsuarioServices.getInstancia().getUsuario(ctx.queryParam("nombreUsuario"));
             if (usuario != null) {
-                if (usuario.getPassword().equals(ctx.queryParam("password"))) { //Si sus credenciales NO son correctas...
+                if (usuario.getPassword().equals(ctx.queryParam("password"))) {
                     ctx.sessionAttribute("usuario", usuario);
                 }else{
-                    ctx.result("Clave no coincide");
-
+                    ctx.result("Clave no coincide").status(400);
                 }
             }else{ctx.status(404);}
-            ctx.status(200);
+            ctx.status(200).result(generarJWT(usuario));
+        });
+
+        app.before("/api-rest/url", ctx -> {
+            String token = ctx.header("Authorization");
+            if(token == null){
+                ctx.status(400).result("Token error");
+            }
+            String jwt = token.replace("Bearer", "");
+            try {
+                Claims claims = Jwts.parser().setSigningKey(Keys.hmacShaKeyFor(KEY.getBytes()))
+                //Claims claims = Jwts.parser().setSigningKey(KEY)
+                        .parseClaimsJws(jwt).getBody();
+
+            }catch (io.jsonwebtoken.JwtException e){
+                ctx.status(400).result("Token error");
+            }
         });
 
         app.post("/api-rest/url",ctx -> {
@@ -74,6 +90,18 @@ public class RestControlador {
             }else{ctx.result("necesita iniciar sesion");}
         });
 
+    }
+
+    private static String generarJWT(Usuario usuario){
+        LocalDateTime ldt = LocalDateTime.now();
+        Date exp = Date.from(ldt.toInstant(ZoneOffset.ofHours(-12)));
+        return Jwts.builder().setIssuer("Grupo 9").setSubject("Proyecto final")
+                .setExpiration(exp)
+                .claim("usuario", usuario.getNombreUsuario())
+                .claim("rol", usuario.getRol())
+                //.signWith(KEY)
+                .signWith(Keys.hmacShaKeyFor(KEY.getBytes()))
+                .compact();
     }
 
 }
