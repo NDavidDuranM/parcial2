@@ -19,7 +19,7 @@ public class Usuario implements Serializable {
     private RolesApp rol;
 
     @OneToMany(fetch = FetchType.EAGER)
-    private Set<URL> urls;
+    private Set<URLs> urls;
 
     public Usuario(){}
 
@@ -54,11 +54,11 @@ public class Usuario implements Serializable {
         this.nombre = nombre;
     }
 
-    public Set<URL> getUrls() {
+    public Set<URLs> getUrls() {
         return urls;
     }
 
-    public void setUrls(Set<URL> urls) {
+    public void setUrls(Set<URLs> urls) {
         this.urls = urls;
     }
 

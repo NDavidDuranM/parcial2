@@ -1,8 +1,7 @@
 package org.pucmm.web.Servicio;
 
 import kong.unirest.Unirest;
-import org.pucmm.web.Modelo.Cliente;
-import org.pucmm.web.Modelo.URL;
+import org.pucmm.web.Modelo.URLs;
 import org.pucmm.web.Modelo.Usuario;
 
 import javax.imageio.ImageIO;
@@ -22,7 +21,7 @@ public class SoapServices{
     private Usuario usuario = null;
 
     @WebMethod
-    public Set<URL> getEnlacesByUser(String nombreUsuario){
+    public Set<URLs> getEnlacesByUser(String nombreUsuario){
         return usuarioService.getURLsByUsuario(nombreUsuario);
     }
 
@@ -39,8 +38,8 @@ public class SoapServices{
     }
 
     @WebMethod
-    public URL registrarEnlace(String direccion){
-        URL url = URLServices.getInstance().nuevaUrlAcortada(direccion);
+    public URLs registrarEnlace(String direccion){
+        URLs url = URLServices.getInstance().nuevaUrlAcortada(direccion);
         URLServices.getInstance().registrarURLUsuario(usuario.getNombreUsuario(), url);
 
         //get imagen con unirest
@@ -66,6 +65,6 @@ public class SoapServices{
     public Usuario getUsuario(){return this.usuario;}
 
     @WebMethod
-    public String getFechaString(URL url){return url.getFechaCreacion().toString();}
+    public String getFechaString(URLs url){return url.getFechaCreacion().toString();}
 
 }

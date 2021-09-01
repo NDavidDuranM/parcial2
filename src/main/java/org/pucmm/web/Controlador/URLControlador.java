@@ -1,21 +1,12 @@
 package org.pucmm.web.Controlador;
 
 import io.javalin.Javalin;
-import io.javalin.plugin.rendering.JavalinRenderer;
-import io.javalin.plugin.rendering.template.JavalinThymeleaf;
-import org.eclipse.jetty.server.session.Session;
-import org.pucmm.web.Modelo.Cliente;
-import org.pucmm.web.Modelo.URL;
 import org.pucmm.web.Modelo.Usuario;
 import org.pucmm.web.Servicio.URLServices;
 import org.pucmm.web.Servicio.UsuarioServices;
 import org.pucmm.web.util.RolesApp;
 
 import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.net.*;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.*;

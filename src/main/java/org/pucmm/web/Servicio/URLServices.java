@@ -1,7 +1,7 @@
 package org.pucmm.web.Servicio;
 
 import org.pucmm.web.Modelo.Cliente;
-import org.pucmm.web.Modelo.URL;
+import org.pucmm.web.Modelo.URLs;
 import org.pucmm.web.Modelo.Usuario;
 
 import javax.persistence.EntityManager;
@@ -17,9 +17,9 @@ public class URLServices {
 
     private char caracteres[]; //Variable donde almacenaremos los 62 posibles caracteres de una URL
     private int longitud_url;
-    private Set<URL> urlsCliente;
+    private Set<URLs> urlsCliente;
 
-    GestionDb gestionDb = new GestionDb(URL.class);
+    GestionDb gestionDb = new GestionDb(URLs.class);
 
     public URLServices()
     {
@@ -59,7 +59,7 @@ public class URLServices {
 
             if(gestionDb.find(url) != null)
             {
-                url = em.find(URL.class,url).getDireccionAcortada();
+                url = em.find(URLs.class,url).getDireccionAcortada();
             }else
             {
                 urlAcortada = getClave(url);
@@ -75,7 +75,7 @@ public class URLServices {
     //Buscar en la base de datos la URL original y retornarla
     public String expandirURL(String urlAcortada)
     {
-        URL url = (URL) gestionDb.find(urlAcortada);
+        URLs url = (URLs) gestionDb.find(urlAcortada);
         return url.getOrigen();
     }
 
@@ -123,8 +123,8 @@ public class URLServices {
         return clave;
     }
 
-    public URL nuevaUrlAcortada(String url) {
-        URL nuevaURL = new URL();
+    public URLs nuevaUrlAcortada(String url) {
+        URLs nuevaURL = new URLs();
         nuevaURL.setOrigen(url);
         nuevaURL.setDireccionAcortada(acortarURL(url));
         urlsCliente.add(nuevaURL);
@@ -134,7 +134,7 @@ public class URLServices {
 
     public String crearRetornarUrlAcortada(String url)
     {
-        URL nuevaURL = new URL();
+        URLs nuevaURL = new URLs();
         nuevaURL.setOrigen(url);
         nuevaURL.setDireccionAcortada(acortarURL(url));
         urlsCliente.add(nuevaURL);
@@ -155,7 +155,7 @@ public class URLServices {
         try
         {
            Usuario user =  em.find(Usuario.class,userId);
-           URL url = em.find(URL.class,urlAcortada);
+           URLs url = em.find(URLs.class,urlAcortada);
 
            em.getTransaction().begin();
            user.getUrls().remove(url);
@@ -174,7 +174,7 @@ public class URLServices {
     public void visitar(String urlAcortada, String navegador, String direccionIP, LocalDate fechaAcceso, LocalTime horaAcceso, String sistemaOperativo)
     {
 
-        URL url = (URL) gestionDb.find(urlAcortada);
+        URLs url = (URLs) gestionDb.find(urlAcortada);
         Cliente cliente = new Cliente(navegador,direccionIP,fechaAcceso, horaAcceso, sistemaOperativo);
 
         GestionDb gestionDbCliente = new GestionDb(Cliente.class);
@@ -186,23 +186,23 @@ public class URLServices {
 
     }
 
-    public List<URL> getURLs()
+    public List<URLs> getURLs()
     {
         return gestionDb.findAll();
     }
 
 
-    public Set<URL> getUrlsCliente() {
+    public Set<URLs> getUrlsCliente() {
         return urlsCliente;
     }
 
-    public void setUrlsCliente(Set<URL> urlsCliente) {
+    public void setUrlsCliente(Set<URLs> urlsCliente) {
         this.urlsCliente = urlsCliente;
     }
 
     public long getCantidadVisitas(String urlAcortada)
     {
-        URL url = (URL) gestionDb.find(urlAcortada);
+        URLs url = (URLs) gestionDb.find(urlAcortada);
         if(url != null)
         {
             return url.getClientes().size();
@@ -215,7 +215,7 @@ public class URLServices {
 
     public long getCantidadVisitasFecha(String urlAcortada, String fecha)
     {
-        URL url = (URL) gestionDb.find(urlAcortada);
+        URLs url = (URLs) gestionDb.find(urlAcortada);
         long contador = 0;
         for(Cliente cliente : url.getClientes())
         {
@@ -229,7 +229,7 @@ public class URLServices {
 
     public ArrayList<LocalTime> getHorasFecha(String urlAcortada, String fecha)
     {
-        URL url = (URL) gestionDb.find(urlAcortada);
+        URLs url = (URLs) gestionDb.find(urlAcortada);
         ArrayList<LocalTime> horas = new ArrayList<>();
         for(Cliente cliente : url.getClientes())
         {
@@ -243,7 +243,7 @@ public class URLServices {
 
     public long getCantidadVisitasNavegador(String urlAcortada, String navegador)
     {
-        URL url = (URL) gestionDb.find(urlAcortada);
+        URLs url = (URLs) gestionDb.find(urlAcortada);
         long contador = 0;
         for(Cliente cliente : url.getClientes())
         {
@@ -255,15 +255,15 @@ public class URLServices {
         return contador;
     }
 
-    public URL getURL(String urlAcortada)
+    public URLs getURL(String urlAcortada)
     {
-        URL url = (URL) gestionDb.find(urlAcortada);
+        URLs url = (URLs) gestionDb.find(urlAcortada);
         return url;
     }
 
     public Set<Cliente> getClientesURLByFecha(String urlAcortada, String fecha)
     {
-        URL url = (URL) gestionDb.find(urlAcortada);
+        URLs url = (URLs) gestionDb.find(urlAcortada);
         Set<Cliente> clientes = new HashSet<>();
 
         for(Cliente cliente : url.getClientes())
@@ -276,7 +276,7 @@ public class URLServices {
         return clientes;
     }
 
-    public void registrarURLUsuario(String idUser, URL url)
+    public void registrarURLUsuario(String idUser, URLs url)
     {
         GestionDb gestionUsuario = new GestionDb(Usuario.class);
         Usuario user = (Usuario) gestionUsuario.find(idUser);
@@ -305,12 +305,12 @@ public class URLServices {
 
     public Set<Cliente> getClientesByUrl(String idUrl)
     {
-        return ((URL) gestionDb.find(idUrl)).getClientes();
+        return ((URLs) gestionDb.find(idUrl)).getClientes();
     }
 
     public Set<Cliente> getClientesByUrlNoUser(String idUrl){
-        URL found = null;
-        for (URL url : this.urlsCliente){
+        URLs found = null;
+        for (URLs url : this.urlsCliente){
             if(url.getDireccionAcortada().equals(idUrl)){
                 found = url;
             }
@@ -318,9 +318,9 @@ public class URLServices {
         return found.getClientes();
     }
 
-    public URL getUrlNoUser(String idUrl){
-        URL found = null;
-        for (URL url : this.urlsCliente){
+    public URLs getUrlNoUser(String idUrl){
+        URLs found = null;
+        for (URLs url : this.urlsCliente){
             if(url.getDireccionAcortada().equals(idUrl)){
                 found = url;
             }

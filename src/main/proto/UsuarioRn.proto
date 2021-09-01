@@ -1,0 +1,27 @@
+syntax = "proto3";
+
+package usuariorn;
+
+message GetURLRequest {
+  string nombreUsuario = 1;
+}
+
+message GetUrlResponse {
+  string response = 1;
+}
+
+message RegistrarURLRequest {
+  string nombreUsuario = 1;
+  string origen = 2;
+}
+
+message RegistrarURLResponse {
+  string response = 1;
+}
+
+//Implementación del servicio
+
+service Usuariorn{
+  rpc GetURL(GetURLRequest) returns (GetUrlResponse);
+  rpc RegistrarURL(RegistrarURLRequest) returns (RegistrarURLResponse);
+}

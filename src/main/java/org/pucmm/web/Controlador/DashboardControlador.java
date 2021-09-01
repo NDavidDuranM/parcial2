@@ -1,10 +1,8 @@
 package org.pucmm.web.Controlador;
 
 import io.javalin.Javalin;
-import io.javalin.plugin.rendering.JavalinRenderer;
-import io.javalin.plugin.rendering.template.JavalinThymeleaf;
 import org.pucmm.web.Modelo.Cliente;
-import org.pucmm.web.Modelo.URL;
+import org.pucmm.web.Modelo.URLs;
 import org.pucmm.web.Modelo.Usuario;
 import org.pucmm.web.Servicio.URLServices;
 import org.pucmm.web.Servicio.UsuarioServices;
@@ -117,7 +115,7 @@ public class DashboardControlador {
             {
                 ctx.redirect("/usuario/iniciarSesion");
             }else {
-                URL url = URLServices.getInstance().getURL(ctx.formParam("url"));
+                URLs url = URLServices.getInstance().getURL(ctx.formParam("url"));
                 fechas = new HashSet<>();
                 visitasFechas = new ArrayList<>();
 
@@ -163,7 +161,7 @@ public class DashboardControlador {
             {
                 ctx.redirect("/usuario/iniciarSesion");
             }else {
-                URL url = URLServices.getInstance().getURL(ctx.formParam("url"));
+                URLs url = URLServices.getInstance().getURL(ctx.formParam("url"));
                 fechas = new HashSet<>();
                 visitasFechas = new ArrayList<>();
 
@@ -190,7 +188,7 @@ public class DashboardControlador {
             {
                 ctx.redirect("/usuario/iniciarSesion");
             }else {
-                URL url = URLServices.getInstance().getURL(ctx.pathParam("url"));
+                URLs url = URLServices.getInstance().getURL(ctx.pathParam("url"));
                 fechas = new HashSet<>();
                 visitasFechas = new ArrayList<>();
 
@@ -219,7 +217,7 @@ public class DashboardControlador {
             {
                 ctx.redirect("/usuario/iniciarSesion");
             }else {
-                URL url = URLServices.getInstance().getURL(ctx.pathParam("url"));
+                URLs url = URLServices.getInstance().getURL(ctx.pathParam("url"));
                 fechas = new HashSet<>();
                 visitasFechas = new ArrayList<>();
 
@@ -251,7 +249,7 @@ public class DashboardControlador {
 
         app.post("/misLinks/infoUrl", ctx -> {
 
-            URL url = URLServices.getInstance().getURL(ctx.formParam("url"));
+            URLs url = URLServices.getInstance().getURL(ctx.formParam("url"));
             fechas = new HashSet<>();
             visitasFechas = new ArrayList<>();
 

@@ -1,6 +1,6 @@
 package org.pucmm.web.Servicio;
 
-import org.pucmm.web.Modelo.URL;
+import org.pucmm.web.Modelo.URLs;
 import org.pucmm.web.Modelo.Usuario;
 import org.pucmm.web.util.RolesApp;
 
@@ -45,7 +45,6 @@ public class UsuarioServices {
         gestionDb.eliminar(user);
     }
 
-
     public Usuario getUsuario(String idUser)
     {
         return (Usuario) gestionDb.find(idUser);
@@ -56,7 +55,7 @@ public class UsuarioServices {
         return gestionDb.findAll();
     }
 
-    public Set<URL> getURLsByUsuario(String idUser)
+    public Set<URLs> getURLsByUsuario(String idUser)
     {
         return ((Usuario) gestionDb.find(idUser)).getUrls();
     }

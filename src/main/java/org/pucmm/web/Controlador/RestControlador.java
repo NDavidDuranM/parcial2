@@ -4,7 +4,7 @@ import io.javalin.Javalin;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import kong.unirest.Unirest;
-import org.pucmm.web.Modelo.URL;
+import org.pucmm.web.Modelo.URLs;
 import org.pucmm.web.Modelo.Usuario;
 import org.pucmm.web.Servicio.URLServices;
 import org.pucmm.web.Servicio.UsuarioServices;
@@ -68,7 +68,7 @@ public class RestControlador {
         app.post("/api-rest/url",ctx -> {
             Usuario user = ctx.sessionAttribute("usuario");
             if (user != null) {
-                URL url = URLServices.getInstance().nuevaUrlAcortada(ctx.queryParam("url"));
+                URLs url = URLServices.getInstance().nuevaUrlAcortada(ctx.queryParam("url"));
                 URLServices.getInstance().registrarURLUsuario(user.getNombreUsuario(), url);
 
                 //get imagen con unirest

@@ -7,13 +7,20 @@ import org.pucmm.web.Modelo.Usuario;
 import org.pucmm.web.Servicio.BootStrapServices;
 import org.pucmm.web.Servicio.UsuarioServices;
 import org.pucmm.web.util.RolesApp;
+
+import java.io.IOException;
 import java.sql.SQLException;
+
+import io.grpc.Server;
+import io.grpc.ServerBuilder;
+import io.grpc.ServerInterceptors;
+import org.pucmm.web.gRPC.UsuarioServicesGrpc;
 
 public class Main {
 
     private static String modoConexion = "";
 
-    public static void main(String[] args) throws SQLException {
+    public static void main(String[] args) throws SQLException, IOException, InterruptedException {
         //Iniciando la BD
         BootStrapServices.getInstancia().init();
 
@@ -31,15 +38,32 @@ public class Main {
             UsuarioServices.getInstancia().registrarUsuario(new Usuario("user","user","user", RolesApp.ROLE_USUARIO));
         }
 
-
         //Clases gestoras de rutas
         new DashboardControlador(app).aplicarRutas();
         new URLControlador(app).aplicarRutas();
         new UsuarioControlador(app).aplicarRutas();
         new RestControlador(app).aplicarRutas();
 
+        /*
+            Para probar el servidor gRPC.
+        */
+        //Puerto del servidor.
+        int port = 50051;
 
+        //Inicializando el servidor
+        Server server = ServerBuilder.forPort(port)
+                .addService(new UsuarioServicesGrpc())// indicando el servicio registrado.
+                .build()
+                .start();
+        System.out.println("Servidor gRPC iniciando y escuchando en " + port);
+
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            System.err.println("Cerrando servidor por la JVM. ");
+            if (server != null) {
+                server.shutdown();
+            }
+            System.err.println("Servidor abajo!...");
+        }));
+        server.awaitTermination();
     }
-
-
 }

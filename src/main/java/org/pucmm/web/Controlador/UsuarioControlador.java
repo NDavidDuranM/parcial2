@@ -1,10 +1,8 @@
 package org.pucmm.web.Controlador;
 
 import io.javalin.Javalin;
-import io.javalin.plugin.rendering.JavalinRenderer;
-import io.javalin.plugin.rendering.template.JavalinThymeleaf;
 import org.jasypt.util.password.StrongPasswordEncryptor;
-import org.pucmm.web.Modelo.URL;
+import org.pucmm.web.Modelo.URLs;
 import org.pucmm.web.Modelo.Usuario;
 import org.pucmm.web.Servicio.URLServices;
 import org.pucmm.web.Servicio.UsuarioServices;
@@ -148,7 +146,7 @@ public class UsuarioControlador {
                     {
                         if(!urlCliente.getKey().equalsIgnoreCase("usuario_recordado") || urlCliente.getKey().equalsIgnoreCase("password_recordado"))
                         {
-                            URL url = URLServices.getInstance().getURL(urlCliente.getKey());
+                            URLs url = URLServices.getInstance().getURL(urlCliente.getKey());
                             if(url != null)
                             {
                                 if(!UsuarioServices.getInstancia().getURLsByUsuario(usuario.getNombreUsuario()).contains(url))

@@ -2,19 +2,16 @@ package org.pucmm.web.Modelo;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import org.junit.Ignore;
 import org.pucmm.web.Servicio.GestionDb;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 @Entity
-public class URL implements Serializable {
+public class URLs implements Serializable {
 
     @Id
     @Column(name="id")
@@ -31,7 +28,7 @@ public class URL implements Serializable {
     private Date fechaCreacion = new Date();
 
 
-    public URL() {
+    public URLs() {
         this.fechaCreacion = new Date();
         if(clientes == null)
         {
@@ -61,8 +58,8 @@ public class URL implements Serializable {
 
     public long getCantidadClientes()
     {
-        GestionDb gestionURL = new GestionDb(URL.class);
-        return ((URL) gestionURL.find(this.direccionAcortada)).getClientes().size();
+        GestionDb gestionURL = new GestionDb(URLs.class);
+        return ((URLs) gestionURL.find(this.direccionAcortada)).getClientes().size();
     }
 
     public void setClientes(Set<Cliente> clientes) {
