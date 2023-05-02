@@ -14,7 +14,6 @@ Built with Java, Javalin framework
 * Jasypt for password encryption
 * MVC design pattern
 * Server side Templating with Thymeleaf
-* SOAP gRPC
 
 UI is functional but extremely jank
 ![image](https://user-images.githubusercontent.com/57234183/235785023-cdf9c20d-5b1a-481e-9cdd-2c49e158d155.png)
